@@ -1,4 +1,4 @@
-# K-means parallel
+# K-means Clustering
 
 A parallel implementation of the unsupervised clustering algorithm K-means with **OpenMP** and **MPI**. The parallelization leverages on a shared memory multiprocessing programming (OpenMP) and a message-passing protocol that allows the communication among nodes (MPI).
 
@@ -19,7 +19,8 @@ Our goal is to maximize the performance, thus minimize the execution time of the
 
 - number of processors (MPI)
 - number of threads considered in the parallel region (OpenMP)
-  Best performance strongly depends on computer specifications.
+
+Best performance strongly depends on computer specifications.
 
 ## Dataset
 
