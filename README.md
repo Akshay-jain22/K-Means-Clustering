@@ -27,7 +27,7 @@ Best performance strongly depends on computer specifications.
 The first line of the dataset must contain the values of the initial parameters, in the following order:
 
 <p align="center">
-	<i>n. point dimension, n. clusters, max iterations</i>
+	<i>n point dimension, k clusters, max iterations</i>
 </p>
 Then, each line refers to point dimensions values.
 You can create your own dataset where the dimension values of each point are randomly assigned.
@@ -50,10 +50,10 @@ mpirun -np (number of processors) ./main
 
 ### Initial Configuration
 
-Suppose we have P processors, where the master node is defined by the Rank 0, and a dataset with N points represented in the space with a M-dimensional vectors. Then the master node:
+Suppose we have P processors, where the master node is defined by the Rank 0, and a dataset with N points represented in the space with a n-dimensional vectors. Then the master node:
 
 1. loads the dataset and scatters it among nodes, assigning to each of them N/P points. R Remaining points are assigned to the first R nodes.
-2. reads initial configuration parameters: no. clusters, no. dimensions, max iterations.
+2. reads initial configuration parameters: no. of dimensions, no. of clusters, max iterations.
 3. chooses K points as initial centroids and broadcast them to the other nodes.
 
 ### K-means 'loop'

@@ -16,12 +16,13 @@ using namespace std;
 /* We must necessarily create a class or a struct Point to make sure that the point is saved in a
  vector. Cannot create a vector of double arrays */
 
+/* Do all your I/O with cout in the process with rank 0. If you want to output some data from other processes,
+    just send MPI message with this data to rank 0.*/
+
 int main(int argc, char *argv[])
 {
-    srand(time(NULL));
-
     int numNodes, rank;
-    const int tag = 13;
+    // const int tag = 13;
 
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -96,10 +97,7 @@ int main(int argc, char *argv[])
 
     node.getStatistics();
 
-    // cout << "\nThe program in rank " << rank << " tooks : " << end - start << " to run" << endl;
-
-    /*Do all your I/O with cout in the process with rank 0. If you want to output some data from other processes,
-     * just send MPI message with this data to rank 0.*/
+    // cout << "\nThe program in rank " << rank << " took : " << end - start << " time to run" << endl;
 
     MPI_Finalize();
 }

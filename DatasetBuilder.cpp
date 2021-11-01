@@ -45,6 +45,8 @@ public:
 
 int main()
 {
+    srand(time(NULL));
+
     int numPoints, pointDimension, numClusters, maxIteration;
     string filename, foldername = "data";
 

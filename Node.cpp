@@ -160,9 +160,7 @@ void Node::scatterDataset()
         for (int i = 0; i < numPoints % numNodes; i++)
             pointsPerNode[i] += 1;
 
-        // Vector contains strides (https://www.mpi-forum.org/docs/mpi-1.1/mpi-11-html/node72.html) so, we need to
-        //  know precisely where starting to divide the several part of the vector<Point>
-
+        // Vector contains strides so, we need to know precisely where starting to divide the several part of the vector<Point>
         int sum = 0;
         datasetDisp[0] = 0;
         for (int i = 1; i < numNodes; i++)
@@ -196,7 +194,7 @@ void Node::scatterDataset()
 
 void Node::extractCluster()
 {
-    /* Initially to extract the clusters, we choose randomly K point of the dataset. This action is performed
+    /* Initially to extract the clusters, we choose K point of the dataset. This action is performed
      * by the Node 0, who sends them to other nodes in broadcast. Ids of clusters are the same of their initial centroid point  */
 
     if (rank == 0)
@@ -216,7 +214,6 @@ void Node::extractCluster()
             cout << "\nChoose initialization method" << endl;
             cout << "1) Random \n";
             cout << "2) First k points\n";
-            // cout << "3) 12 points referring to 12 different topics\n";
             cout << "Enter your choice and press return: ";
             cin >> choice;
 
@@ -238,8 +235,6 @@ void Node::extractCluster()
                         }
                     }
 
-                // for (int i = 0; i < clusterIndices.size(); i++)
-                //     clusters.push_back(dataset[clusterIndices[i]]);
                 gameOn = false;
                 break;
             }
@@ -251,16 +246,6 @@ void Node::extractCluster()
                 gameOn = false;
                 break;
             }
-
-                // case 3:
-                // {
-                //     // Fixed point referring to different topics
-                //     vector<int> allDiffTopicsPoint = {0, 1, 2, 4, 5, 6, 8, 9, 13, 17, 19, 7030};
-                //     for (int i = 0; i < allDiffTopicsPoint.size(); i++)
-                //         clusters.push_back(dataset[allDiffTopicsPoint[i]]);
-                //     gameOn = false;
-                //     break;
-                // }
 
             default:
             {
