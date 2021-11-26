@@ -7,7 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include <math.h>
-#include "Node.h"
+#include "./Node.h"
 
 #define NUM_THREAD 4
 
@@ -63,48 +63,20 @@ void Node::readDataset()
 {
     if (rank == 0)
     {
-        string filename, foldername;
-        cout << "Enter Foldername for input dataset : ";
-        getline(cin, foldername);
-
-        cout << "Enter Filename for input dataset : ";
+        string filename;
+        cout << "Enter File Path for input dataset : ";
         getline(cin, filename);
 
-        filename = foldername + "/" + filename;
-
-        bool onDistance = true;
-        while (onDistance)
-        {
-            cout << "\nWhich distance do you want to use? " << endl;
-            cout << "1) Euclidean Distance" << endl;
-            cout << "2) Cosine Similarity" << endl;
-            cout << "Enter your choice and press return: ";
-            cin >> distance;
-
-            switch (distance)
-            {
-            case 1:
-                onDistance = false;
-                break;
-            case 2:
-                onDistance = false;
-                break;
-            default:
-                cout << "Not a Valid Choice. \n";
-                cout << "Choose again.\n";
-            }
-        }
-
         ifstream infile(filename);
-        string line;
         cout << "\nReading file ..." << endl;
 
         // Reading First Line
+        string line;
         getline(infile, line, '\n');
         stringstream ss(line);
         getline(ss, line, ',');
         total_values = stoi(line);
-        cout << "Total values is: " << total_values << endl;
+        cout << "Total dimensions is: " << total_values << endl;
 
         getline(ss, line, ',');
         K = stoi(line);
@@ -134,6 +106,29 @@ void Node::readDataset()
 
         infile.close();
         cout << "Reading ended" << endl;
+
+        bool onDistance = true;
+        while (onDistance)
+        {
+            cout << "\nWhich distance do you want to use? " << endl;
+            cout << "1) Euclidean Distance" << endl;
+            cout << "2) Cosine Similarity" << endl;
+            cout << "Enter your choice and press return: ";
+            cin >> distance;
+
+            switch (distance)
+            {
+            case 1:
+                onDistance = false;
+                break;
+            case 2:
+                onDistance = false;
+                break;
+            default:
+                cout << "Not a Valid Choice. \n";
+                cout << "Choose again.\n";
+            }
+        }
     }
     MPI_Bcast(&distance, 1, MPI_INT, 0, comm);
 }
@@ -343,7 +338,6 @@ int Node::run(int it)
 #pragma omp parallel for shared(memCounter) num_threads(NUM_THREAD)
     for (int i = 0; i < localDataset.size(); i++)
     {
-
         int old_mem = memberships[i];
         int new_mem = getIdNearestCluster(localDataset[i]);
 
@@ -391,7 +385,7 @@ int Node::run(int it)
     }
 
     t_i = omp_get_wtime();
-#pragma omp parallel for num_threads(NUM_THREAD) shared(reduceArr) // Questo forse rallenta
+#pragma omp parallel for num_threads(NUM_THREAD) shared(reduceArr) // This perhaps slows down
     for (int i = 0; i < K; i++)
         for (int j = 0; j < total_values; j++)
             reduceArr[i * total_values + j] = localSum[i].values[j];
@@ -502,20 +496,19 @@ int Node::getMaxIterations()
     return max_iterations;
 }
 
-void Node::writeClusterMembership(string filename)
+void Node::writeClusterMembership(string foldername, string filename)
 {
     ofstream myfile;
-    myfile.open("results/" + filename + ".csv");
-    myfile << "Point_id, Cluster_id"
-           << "\n";
+    myfile.open(foldername + filename + ".csv");
+    myfile << "Point_id, Cluster_id" << endl;
     for (int p = 0; p < numPoints; p++)
-        myfile << dataset[p].id << ", " << clusters[globalMembership[p]].id << "\n";
+        myfile << dataset[p].id << ", " << clusters[globalMembership[p]].id << endl;
     myfile.close();
 }
 
+// Standard Deviation of the sum of squares within each cluster
 vector<double> Node::SSW()
 {
-    // Standard Deviation of the sum of squares within each cluster
     vector<double> ssws;
     double ssw = 0.0;
 
@@ -575,7 +568,6 @@ void Node::getStatistics()
 
         cout << " - Iteration computed: " << lastIteration << endl;
 
-        cout << "\n - Execution time: " << endl;
         for (int i = 0; i < numNodes; i++)
             cout << "Process " << i << ": " << executionTimes[i] << endl;
 

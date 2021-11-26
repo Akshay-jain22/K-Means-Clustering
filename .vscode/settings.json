@@ -1,9 +1,6 @@
 {
   "files.associations": {
-    "*.html": "html",
-    "*.txt": "plaintext",
-    "fstream": "cpp",
-    "iosfwd": "cpp",
+    "chrono": "cpp",
     "ostream": "cpp"
   }
 }

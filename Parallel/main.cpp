@@ -1,13 +1,7 @@
-#include <iostream>
-#include <vector>
-#include <math.h>
-#include <algorithm>
+#include <bits/stdc++.h>
 #include "Point.h"
-#include "Node.h"
-#include <stddef.h>
+#include "./Node.h"
 #include <mpi.h>
-#include <fstream>
-#include <sstream>
 
 #define MAX_DIM 100
 
@@ -39,6 +33,7 @@ int main(int argc, char *argv[])
     node.scatterDataset();
     node.extractCluster();
 
+    auto start = chrono::system_clock::now();
     lastIteration = 0;
     for (int it = 0; it < node.getMaxIterations(); it++)
     {
@@ -73,6 +68,10 @@ int main(int argc, char *argv[])
     node.setLastIteration(lastIteration);
 
     node.computeGlobalMembership();
+
+    auto end = chrono::system_clock::now();
+    auto total_time = chrono::duration_cast<chrono::milliseconds>(end - start);
+
     if (rank == 0)
     {
         int *gm;
@@ -81,23 +80,19 @@ int main(int argc, char *argv[])
 
         // node.printClusters();
 
-        string doWrite;
-        cout << "\nDo you want to save points membership? (y/n) : ";
-        cin >> doWrite;
-        if (doWrite == "y")
-        {
-            string outFilename = "membershipsFilename";
-            cout << "Specify output filename (without .csv): ";
-            cin.ignore();
-            getline(cin, outFilename);
+        string foldername = "../results/";
+        string outFilename = "membershipsFilename";
+        cout << "Specify output filename (without .csv): ";
+        cin.ignore();
+        getline(cin, outFilename);
 
-            node.writeClusterMembership(outFilename);
-        }
+        node.writeClusterMembership(foldername, outFilename);
     }
 
     node.getStatistics();
 
-    // cout << "\nThe program in rank " << rank << " took : " << end - start << " time to run" << endl;
+    if (rank == 0)
+        cout << "\n - Execution time: " << total_time.count() << " ms" << endl;
 
     MPI_Finalize();
 }

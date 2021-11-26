@@ -6,7 +6,7 @@
 #include <math.h>
 #include <algorithm>
 #include <vector>
-#include "Point.h"
+#include "./Point.h"
 
 using namespace std;
 
@@ -50,7 +50,7 @@ public:
     int getNumPoints();
     int *getGlobalMemberships();
     void printClusters();
-    void writeClusterMembership(string filename);
+    void writeClusterMembership(string foldername, string filename);
 
     void getStatistics();
     vector<double> SSW(); // Variance within cluster (https://math.stackexchange.com/questions/1009297/variances-for-k-means-clustering)
